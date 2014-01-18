@@ -292,10 +292,15 @@ public class NotificationMgr {
                 R.drawable.stat_notify_voicemail_sub3};
 
         int notificationId = getNotificationId(VOICEMAIL_NOTIFICATION, phoneId);
+        int resId;
         if (visible) {
-            int resId = android.R.drawable.stat_notify_voicemail;
-            if (PhoneUtils.isMultiSimEnabled()) {
+            if (Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.KEY_VOICEMAIL_BREATH, 0) == 1) {
+                resId = R.drawable.stat_notify_voicemail_breath;
+            } else if (PhoneUtils.isMultiSimEnabled()) {
                 resId = mwiIcon[phoneId];
+            } else {
+                resId = android.R.drawable.stat_notify_voicemail;
             }
 
             // This Notification can get a lot fancier once we have more
