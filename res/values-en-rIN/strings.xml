@@ -182,6 +182,16 @@
     <string name="preferred_network_mode_lte_cdma_summary" msgid="3722647806454528426">"Preferred network mode: LTE/CDMA"</string>
     <string name="preferred_network_mode_tdscdma_summary" msgid="8021016193718678775">"Preferred network mode: TDSCDMA"</string>
   <string-array name="preferred_network_mode_choices">
+    <item>TD-SCDMA/LTE/CDMA/EVDO/GSM/WCDMA </item>
+    <item>TD-SCDMA/GSM/WCDMA/CDMA/EVDO </item>
+    <item>TD-SCDMA/GSM/WCDMA/LTE</item>
+    <item>TD-SCDMA/WCDMA/LTE</item>
+    <item>TD-SCDMA/GSM/WCDMA</item>
+    <item>TD-SCDMA/GSM/LTE</item>
+    <item>TD-SCDMA/GSM</item>
+    <item>TD-SCDMA/LTE</item>
+    <item>TD-SCDMA/WCDMA</item>
+    <item>TD-SCDMA only</item>
     <item msgid="7886739962255042385">"LTE/WCDMA"</item>
     <item msgid="577652050447385699">"LTE"</item>
     <item msgid="6813597571293773656">"Global"</item>
@@ -195,7 +205,7 @@
     <item msgid="7913148405605373434">"WCDMA only"</item>
     <item msgid="1524224863879435516">"GSM only"</item>
     <item msgid="3817924849415716259">"GSM/WCDMA preferred"</item>
-  </string-array>
+ </string-array>
     <string name="enhanced_4g_lte_mode_title" msgid="522191650223239171">"Enhanced 4G LTE Mode"</string>
     <string name="enhanced_4g_lte_mode_summary" msgid="2332175070522125850">"Use LTE services to improve voice and other communications (recommended)"</string>
     <string name="data_enabled" msgid="5972538663568715366">"Data enabled"</string>

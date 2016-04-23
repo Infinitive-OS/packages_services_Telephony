@@ -229,7 +229,6 @@ public class CallBarring extends PreferenceActivity implements DialogInterface.O
             } else {
                 if (DBG) log("onResume: airplane mode on");
                 showDialog(RADIO_OFF_ERROR);
-                finish();
             }
         } else {
             mListOutgoing.setValue(String.valueOf(mOutgoingState));
@@ -683,6 +682,13 @@ public class CallBarring extends PreferenceActivity implements DialogInterface.O
 
             b.setTitle(getText(titleId));
             b.setMessage(getText(msgId));
+            b.setNeutralButton(R.string.close_dialog,
+                    new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int id) {
+                                finish();
+                            }
+                    });
             b.setCancelable(false);
             AlertDialog dialog = b.create();
 

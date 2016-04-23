@@ -2884,6 +2884,20 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
         return false;
     }
 
+    /*
+     * {@hide}
+     * Returns the IMS Registration Status based on subId
+     */
+    //@Override
+    public boolean isImsRegisteredUsingSubId(int subId) {
+        final Phone phone = getPhone(subId);
+
+        if (phone != null) {
+            return phone.isImsRegistered();
+        }
+        return false;
+    }
+
     @Override
     public int getSubIdForPhoneAccount(PhoneAccount phoneAccount) {
         return PhoneUtils.getSubIdForPhoneAccount(phoneAccount);
@@ -2899,6 +2913,34 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
 
     /*
      * {@hide}
+     * Returns the VO WifiCalling Status
+     */
+    //@Override
+    public boolean isVoWifiCallingAvailableUsingSubId(int subId) {
+        final Phone phone = getPhone(subId);
+
+        if (phone != null) {
+            return phone.isWifiCallingEnabled();
+        }
+        return false;
+    }
+
+    /*
+     * {@hide}
+     * Returns the Video telephony WifiCalling Status
+     */
+    //@Override
+    public boolean isVideoTelephonyWifiCallingAvailableUsingSubId(int subId) {
+        final Phone phone = getPhone(subId);
+
+        if (phone != null) {
+            return phone.isVideoWifiCallingEnabled();
+        }
+        return false;
+    }
+
+    /*
+     * {@hide}
      * Returns the IMS Registration Status
      */
     public boolean isVolteAvailable() {
@@ -2906,10 +2948,37 @@ public class PhoneInterfaceManager extends ITelephony.Stub {
     }
 
     /*
+     * {@hide}
+     * Returns the volte Status
+     */
+    //@Override
+    public boolean isVolteAvailableUsingSubId(int subId) {
+        final Phone phone = getPhone(subId);
+
+        if (phone != null) {
+            return phone.isVolteEnabled();
+        }
+        return false;
+    }
+
+    /*
      * {@hide} Returns the IMS Registration Status
      */
     public boolean isVideoTelephonyAvailable() {
         return mPhone.isVideoEnabled();
+    }
+
+    /*
+     * {@hide} Returns the video telephony Status
+     */
+    //@Override
+    public boolean isVideoTelephonyAvailableUsingSubId(int subId) {
+        final Phone phone = getPhone(subId);
+
+        if (phone != null) {
+            return phone.isVideoEnabled();
+        }
+        return false;
     }
 
     private boolean canReadPhoneState(String callingPackage, String message) {
