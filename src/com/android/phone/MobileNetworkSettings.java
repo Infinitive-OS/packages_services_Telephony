@@ -158,23 +158,40 @@ public class MobileNetworkSettings extends PreferenceActivity
     private IExtTelephony mExtTelephony = IExtTelephony.Stub.
             asInterface(ServiceManager.getService("extphone"));
     private static final int NOT_PROVISIONED = 0;
+    int[] callState = new int[TelephonyManager.getDefault().getPhoneCount()];
 
-    private final PhoneStateListener mPhoneStateListener = new PhoneStateListener() {
-        /*
-         * Enable/disable the 'Enhanced 4G LTE Mode' when in/out of a call
-         * and depending on TTY mode and TTY support over VoLTE.
-         * @see android.telephony.PhoneStateListener#onCallStateChanged(int,
-         * java.lang.String)
-         */
-        @Override
-        public void onCallStateChanged(int state, String incomingNumber) {
-            if (DBG) log("PhoneStateListener.onCallStateChanged: state=" + state);
-            boolean enabled = (state == TelephonyManager.CALL_STATE_IDLE) &&
-                    ImsManager.isNonTtyOrTtyOnVolteEnabled(getApplicationContext());
-            Preference pref = getPreferenceScreen().findPreference(BUTTON_4G_LTE_KEY);
-            if (pref != null) pref.setEnabled(enabled && hasActiveSubscriptions());
-        }
-    };
+    private void listenForCallState(int subId, int listenStatus) {
+        TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        tm.listen(new PhoneStateListener(subId) {
+            /*
+             * Enable/disable the 'Enhanced 4G LTE Mode' when in/out of a call
+             * and depending on TTY mode and TTY support over VoLTE.
+             * @see android.telephony.PhoneStateListener#onCallStateChanged(int,
+             * java.lang.String)
+             */
+            @Override
+            public void onCallStateChanged(int state, String incomingNumber) {
+                if (DBG) {
+                    log("PhoneStateListener.onCallStateChanged: state=" + state +
+                            " SubId: " + mSubId);
+                }
+                int phoneId = SubscriptionManager.getPhoneId(mSubId);
+                boolean enabled = true;
+
+                callState[phoneId] = state;
+                for (int i = 0; i < TelephonyManager.getDefault().getPhoneCount(); i++) {
+                    if (DBG) log("callstate: " + callState[i]);
+                    enabled = (callState[i] == TelephonyManager.CALL_STATE_IDLE);
+                    if (!enabled) break;
+                }
+                enabled = enabled &&
+                        ImsManager.isNonTtyOrTtyOnVolteEnabled(getApplicationContext());
+                Preference pref = getPreferenceScreen().findPreference(BUTTON_4G_LTE_KEY);
+                if (pref != null) pref.setEnabled(enabled && hasActiveSubscriptions());
+            }
+
+        }, listenStatus);
+    }
 
     private final BroadcastReceiver mPhoneChangeReceiver = new PhoneChangeReceiver();
 
@@ -713,11 +730,13 @@ public class MobileNetworkSettings extends PreferenceActivity
 
         if (ImsManager.isVolteEnabledByPlatform(this)
                 && ImsManager.isVolteProvisionedOnDevice(this)) {
-            TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-            tm.listen(mPhoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+            Phone[] phones = PhoneFactory.getPhones();
+            for (Phone phone : phones) {
+                listenForCallState(phone.getSubId(), PhoneStateListener.LISTEN_CALL_STATE);
+            }
         }
 
-        // NOTE: Buttons will be enabled/disabled in mPhoneStateListener
+        // NOTE: Buttons will be enabled/disabled in PhoneStateListener
         boolean enh4glteMode = ImsManager.isEnhanced4gLteModeSettingEnabledByUser(this)
                 && ImsManager.isNonTtyOrTtyOnVolteEnabled(this);
         mButton4glte.setChecked(enh4glteMode);
@@ -1058,8 +1077,10 @@ public class MobileNetworkSettings extends PreferenceActivity
 
         if (ImsManager.isVolteEnabledByPlatform(this)
                 && ImsManager.isVolteProvisionedOnDevice(this)) {
-            TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-            tm.listen(mPhoneStateListener, PhoneStateListener.LISTEN_NONE);
+            Phone[] phones = PhoneFactory.getPhones();
+            for (Phone phone : phones) {
+               listenForCallState(phone.getSubId(), PhoneStateListener.LISTEN_NONE);
+            }
         }
 
         mSubscriptionManager
