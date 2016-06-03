@@ -1062,6 +1062,10 @@ public class MobileNetworkSettings extends PreferenceActivity
                             R.array.preferred_network_mode_gsm_wcdma_choices);
                     mButtonPreferredNetworkMode.setEntryValues(
                             R.array.preferred_network_mode_gsm_wcdma_values);
+                    mButtonEnabledNetworks.setEntries(
+                            R.array.preferred_network_mode_gsm_wcdma_choices);
+                    mButtonEnabledNetworks.setEntryValues(
+                            R.array.preferred_network_mode_gsm_wcdma_values);
                 } else if (getPreferredNetworkModeForPhoneId() == Phone.NT_MODE_GSM_ONLY) {
                     mButtonPreferredNetworkMode.setEnabled(false);
                     mButtonEnabledNetworks.setEnabled(false);
